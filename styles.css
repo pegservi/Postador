@@ -1,0 +1,752 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #080f28;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Estilo para o diálogo */
+.dialog {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+    backdrop-filter: blur(10px); /* Desfoque no fundo */
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* Acima do resto do conteúdo */
+}
+/* Estilos para ocultar e exibir o diálogo */
+.spinner-overlay {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Fundo semitransparente escurecido */
+    backdrop-filter: blur(10px); /* Desfoque ao fundo */
+    z-index: 99999;
+}
+
+/* Centralização absoluta do diálogo */
+.spinner-dialog {
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo branco semitransparente */
+    padding: 20px 40px;
+    border-radius: 20px; /* Borda arredondada estilo iOS */
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    text-align: center;
+    font-size: 18px;
+    color: #333; /* Texto escuro suave */
+    backdrop-filter: blur(20px); /* Desfoque adicional no próprio diálogo */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda fina estilo iOS */
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centralização perfeita */
+}
+
+/* Mostrar o spinner */
+.spinner-overlay.active {
+    display: block; /* Exibe o diálogo quando ativo */
+}
+
+.dialog-content {
+    background-color: #ffffff; /* Fundo branco */
+    padding: 20px;
+    border-radius: 20px; /* Bordas arredondadas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Fonte estilo iOS */
+    animation: fadeIn 0.3s ease-in-out; /* Animação de aparição */
+}
+
+.dialog-content p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333333; /* Texto em cor escura */
+}
+
+.dialog-content button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 12px; /* Bordas arredondadas */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#cancelButton {
+    background-color: #f0f0f5; /* Fundo cinza claro */
+    color: #333333; /* Texto em cor escura */
+}
+
+#cancelButton:hover {
+    background-color: #e0e0e5; /* Fundo cinza um pouco mais escuro no hover */
+}
+
+#publishButton {
+    background-color: #007aff; /* Fundo azul estilo iOS */
+    color: white; /* Texto branco */
+}
+
+#publishButton:hover {
+    background-color: #005bb5; /* Fundo azul um pouco mais escuro no hover */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(182deg, rgb(0 19 96 / 86%) 0, rgb(18 32 90) 1%, #141a32);
+   
+    padding: 10px 20px;
+    flex-wrap: wrap;
+}
+
+.left-header, .right-header {
+    display: flex;
+    align-items: center;
+}
+/* Reseta margens e preenchimentos padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Esconde o select apenas na versão tablet */
+@media (max-width: 1024px) and (min-width: 600px) {
+    #popularityFilter {
+        display: none; /* Remove o elemento da visualização */
+    }
+}
+
+header {
+
+display: flex;
+margin-top: -9px;
+ /* Garante que o cabeçalho fique acima de outros elementos */
+border-bottom: 1px solid #e5e5e5;
+background: linear-gradient(182deg, rgb(0 19 96 / 86%) 0, rgb(18 32 90) 1%, #141a32);
+}
+.logo {
+	
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    margin-right: 20px;
+}
+
+nav button {
+    background-size: 400% 400%;
+    background-image: linear-gradient(178deg, #FF0000, #000, #00f3ff, #dd0033f0);
+    animation: mygradient 8s ease infinite;
+    color: #fff;
+    border: none;
+    margin-right: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+nav button:hover {
+    background-color: #0056b3;
+}
+/* Estilos gerais do formulário */
+#editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    max-width: 400px;
+    max-height: 300px;
+    overflow-y: auto; /* Adiciona rolagem vertical */
+    margin: 0 auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos dos rótulos */
+#editForm label {
+    font-size: 14px;
+    font-weight: normal;
+    color: #444;
+    margin-bottom: 3px;
+}
+
+/* Estilos dos inputs de texto */
+#editForm input[type="text"],
+#editForm textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+    transition: border-color 0.2s ease;
+}
+
+/* Foco dos inputs e textarea */
+#editForm input[type="text"]:focus,
+#editForm textarea:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+/* Estilo do textarea */
+#editForm textarea {
+    resize: none;
+    height: 70px;
+}
+
+/* Estilos dos botões */
+#editForm button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#saveEditButton {
+    background-color: #007bff;
+    color: #fff;
+}
+
+#cancelEditButton {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* Efeitos de hover nos botões */
+#saveEditButton:hover {
+    background-color: #0056b3;
+}
+
+#cancelEditButton:hover {
+    background-color: #5a6268;
+}
+
+.stats span {
+    margin-right: 15px;
+    color: #999393;
+}
+
+.meta-updater {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.meta-updater span {
+    margin-right: 10px;
+    color: #0f5d06;
+}
+/* Ocultar a barra de progresso inicialmente */
+.progress-container {
+    display: none;
+}
+
+/* Estilo da barra de progresso */
+.progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #4caf50;
+    transition: width 0.5s;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 10px;
+    background-color: #33ff00;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: #4caf50;
+    border-radius: 5px 0 0 5px;
+}
+
+.meta-updater button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+}
+
+.meta-updater button#continueButton {
+    background-color: #007bff;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+/* CSS para estilizar os elementos select */
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8; /* Cor de fundo padrão */
+}
+
+/* Quando o select estiver focado */
+select:focus {
+    outline: none; /* Remover a borda de foco padrão */
+    border-color: #66afe9; /* Cor da borda quando em foco */
+}
+
+/* Estilo hover */
+select:hover {
+    background-color: #eaeaea; /* Cor de fundo ao passar o mouse */
+}
+
+/* Estilo hover quando focado */
+select:hover:focus {
+    background-color: #dcdcdc; /* Cor de fundo quando focado e passando o mouse */
+}
+
+.search-bar input {
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.search-bar button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.filters {
+    display: flex;
+    justify-content: flex-start;
+    background: linear-gradient(182deg, rgb(0 19 96 / 86%) 0, rgb(18 32 90) 1%, #141a32);
+    padding: 10px 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.filters select, .filters button {
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 10px;
+    background-size: 400% 400%;
+    background-image: linear-gradient(178deg, #00b4ff, #000, #00f3ff, #dd0033f0);
+    animation: mygradient 8s ease infinite;
+    color: #fff;
+    color: #000;
+    border: 1px solid #1bb8ff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.filters button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.filters button:hover {
+    background-color: #0056b3;
+}
+
+.status-bar {
+    background: linear-gradient(182deg, rgb(0 19 96 / 86%) 0, rgb(18 32 90) 1%, #141a32);
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #ddd;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main {
+    flex: 1;
+    padding-bottom: 50px; /* Height of the status bar */
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.movie-card {
+    background-color: #080f28;
+    border: 1px solid #e3c0c0;
+    border-radius: 5px;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 5px rgb(207 28 160 / 71%);
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+}
+
+.movie-card .title {
+    padding: 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.movie-card .release-date {
+    padding: 10px;
+    font-size: 0.8em;
+    color: #555;
+}
+
+.spinner {
+	transform: translate(-50%, -50%); /* Ajusta o centro para o meio da tela */
+    z-index: 9999; /* Garante que o elemento esteja na frente de todos */
+  
+    display: none;
+    margin: 40px auto;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #00fde8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+	border: 8px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #FF0000;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+    display: none;
+  
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.2s;
+}
+
+.movie-card img:hover {
+    transform: scale(1.1);
+}
+
+.movie-card h3 {
+    font-size: 1rem;
+    margin: 10px 0;
+    color: #fff;
+    text-align: center;
+    font-weight: normal;
+}
+
+.movie-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+.rating img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    filter: invert(26%) sepia(100%) saturate(252%) hue-rotate(337deg) brightness(90%) contrast(95%);
+}
+
+.rating span {
+    color: red;
+}
+
+/* Estilização da barra de pesquisa */
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Para alinhar à direita */
+}
+
+.search-bar input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+    padding: 10px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .filters {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filters select,
+    .filters button,
+    .search-bar {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .search-bar {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr); /* Três colunas no modo mobile */
+    }
+}
+
+/* Estilização da barra de status */
+.status-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.status-bar span {
+    flex: 1;
+    min-width: 200px; /* Para garantir que os spans se comportem bem em telas pequenas */
+    text-align: center;
+    margin: 5px 0;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .status-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-bar span {
+        width: 66%;
+        text-align: left;
+    }
+}
+
+.header-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.left-header {
+	margin-top: -9px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+nav {
+	        margin-top: 15px;
+    display: flex;
+}
+
+nav button {
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.stats span {
+    margin: 2px 0;
+}
+
+.right-header {
+    display: flex;
+    align-items: center;
+}
+
+.meta-updater {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 10px;
+    margin: 0 10px;
+}
+
+.progress {
+    height: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .right-header,
+    .stats {
+        display: none; /* Ocultar elementos no mobile */
+    }
+
+    nav {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    nav button {
+        flex: 1;
+        margin: 5px;
+        text-align: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header-container {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .right-header,
+    .stats {
+        display: flex; /* Mostrar elementos em tablets e desktops */
+    }
+
+    nav {
+        margin-left: auto;
+    }
+
+    .stats {
+        flex-direction: row;
+    }
+}
+.header-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+}
+/* CSS para versão PC */
+.logo {
+	
+    width: 200px; /* Ajuste conforme necessário */
+    height: auto;
+}
+
+/* CSS para versão móvel */
+@media (max-width: 768px) {
+    .logo {
+        width: 150px; /* Ajuste conforme necessário */
+        height: auto;
+    }
+}
+.left-header {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+	margin-top: 6px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 15px;
+}
+.status-bar {
+    position: fixed;
+	height: 8%;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px; /* Reduz a altura */
+    background-color: #1e1e1e; /* Ajuste a cor de fundo conforme necessário */
+    transition: transform 0.3s ease;
+    z-index: 1000; /* Garante que a barra de status fique sobre outros conteúdos */
+}
+
+.status-bar.hidden {
+    transform: translateY(100%);
+}

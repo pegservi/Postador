@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InaDB</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
+	    <style>
+        /* Estilos para a animação de desvanecimento */
+        body.fade-out {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+    </style>
+	    <style>
+
+        .blur {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-dialog {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+        }
+        .login-dialog input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-dialog button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .error-message {
+            display: none;
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s, top 0.5s;
+        }
+        .error-message.show {
+            display: block;
+            top: -10px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="left-header">
+                 <img class="logo" src="inadb.png" alt="Templateina.org">
+            
+                <nav>
+    <a href="Movies.html"><button id="moviesButton" style="background-color: #0b9f1b;">Filmes</button></a>
+    <a href="../Series/Serie.html"><button id="showsButton">Séries</button></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="filters">
+            <select id="yearFilter">
+                <option value="">All years</option>
+            </select>
+            <select id="popularityFilter">
+                <option value="popularity.desc">Popularity desc</option>
+                <option value="popularity.asc">Popularity asc</option>
+            </select>
+            <select id="genreFilter">
+                <option value=''>All genres</option>
+                <option value='28'>Action</option>
+                <option value='12'>Adventure</option>
+                <option value='16'>Animation</option>
+                <option value='35'>Comedy</option>
+                <option value='80'>Crime</option>
+                <option value='99'>Documentary</option>
+                <option value='18'>Drama</option>
+                <option value='10751'>Family</option>
+                <option value='14'>Fantasy</option>
+                <option value='36'>History</option>
+                <option value='27'>Horror</option>
+                <option value='10402'>Music</option>
+                <option value='9648'>Mystery</option>
+                <option value='10749'>Romance</option>
+                <option value='878'>Science Fiction</option>
+                <option value='10770'>TV Movie</option>
+                <option value='53'>Thriller</option>
+                <option value='10752'>War</option>
+                <option value='37'>Western</option>
+            </select>
+            <button id="discoverButton">Discover</button>
+			<div id="loadingSpinner" class="spinner-overlay">
+    <div class="spinner-dialog">
+        <span>Loading...</span>
+    </div>
+</div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search..." id="searchInput">
+                <button id="searchButton">Search</button>
+				<div id="loadingSpinner" class="spinner-overlay">
+    <div class="spinner-dialog">
+        <span>Loading...</span>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="movie-grid" id="movieGrid">
+            <!-- Movie cards will be generated here -->
+        </div>
+        <div class="search-results" id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+        <div class="spinner" id="loadingSpinner"></div>
+    </main>
+    <div class="status-bar">
+        <span class="filter-status">FILTER: Process Templateina</span>
+        <span class="dbmvs-status">DBMVS: Welcome, the service has started successfully</span>
+    </div>
+    <div class="blur" id="loginDialog">
+        <div class="login-dialog">
+            <h2>Enter Password</h2>
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="checkPassword()">Submit</button>
+            <div id="errorMessage" class="error-message">Incorrect password, please try again.</div>
+        </div>
+    </div>
+    <div id="dialog" class="dialog">
+        <div class="dialog-content">
+            <h2 id="dialogTitle"></h2>
+            <p>Deseja publicar este filme no Blogger?</p>
+            <button id="cancelButton">Cancelar</button>
+            <button id="publishButton">Publicar</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p id="publishStatus"></p>
+        </div>
+    </div>
+<div id="postedDialog" class="dialog">
+        <div class="dialog-content">
+            <h2>Filmes Postados</h2>
+            <div id="postedMoviesList">
+                <!-- Posted movies will be listed here -->
+            </div>
+            <button id="closePostedDialog">Fechar</button>
+        </div>
+    </div>
+    
+    <div id="editDialog" class="dialog">
+        <div class="dialog-content">
+            <h2>Editar Filme</h2>
+            <form id="editForm">
+                <label for="titleInput">Título:</label>
+                <input type="text" id="titleInput" name="title">
+                
+                
+                <textarea id="synopsisInput" name="synopsis"></textarea>
+                
+                <button type="button" id="saveEditButton">Salvar</button>
+                <button type="button" id="cancelEditButton">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const publishButton = document.getElementById('publishButton');
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.getElementById('progressBar');
+            
+            publishButton.addEventListener('click', function() {
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '100%'; // Ajuste conforme necessário
+            });
+        });
+    </script>
+	<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Função para detectar se é PC ou TV
+        function isPCorTV() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes('smart-tv') || 
+                   userAgent.includes('tv') || 
+                   userAgent.includes('netcast') || 
+                   userAgent.includes('googletv') || 
+                   userAgent.includes('appletv') || 
+                   userAgent.includes('hbbtv') || 
+                   userAgent.includes('pov_tv') || 
+                   !('ontouchstart' in window || navigator.maxTouchPoints > 0);
+        }
+
+        // Função para detectar se é uma tela pequena (celular)
+        function isMobile() {
+            return window.innerWidth <= 768; // Você pode ajustar o valor de acordo com suas necessidades
+        }
+
+        if (!isPCorTV() && isMobile()) {
+            setTimeout(function() {
+                document.body.classList.add('fade-out');
+                setTimeout(function() {
+                    window.location.href = "../index.html"; // Substitua pela URL de redirecionamento desejada
+                }, 1000);
+            }, 1000);
+        }
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script>
+        // Guarda a largura e a altura da tela na inicialização
+        let lastWidth = window.innerWidth;
+        let lastHeight = window.innerHeight;
+
+        function checkResize() {
+            // Verifica se a largura ou altura mudou
+            if (window.innerWidth !== lastWidth || window.innerHeight !== lastHeight) {
+                lastWidth = window.innerWidth;
+                lastHeight = window.innerHeight;
+                // Recarrega a página completamente
+                window.location.reload(true);
+            }
+        }
+
+        // Adiciona o ouvinte para o evento resize
+        window.addEventListener('resize', checkResize);
+
+        // Adiciona o ouvinte para mudanças na orientação
+        window.addEventListener('orientationchange', function() {
+            // Recarrega a página se houver mudança de orientação
+            window.location.reload(true);
+        });
+    </script>
+    <script src="scripts.js"></script>
+</body>
+</html>
